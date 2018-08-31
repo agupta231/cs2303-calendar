@@ -111,14 +111,6 @@ int determineFirstDay(int month, int year) {
 	return centuryAdjusted % 7;
 }
 
-void printYear(int year) {
-	printf("***    Calendar for %d    ***", year);
-
-	for(int i = 0; i < 12; i++) {
-		printMonth(i, year);
-	}
-}
-
 void printMonth(int month, int year) {
 	switch(month) {
 		case JAN:
@@ -163,6 +155,14 @@ void printMonth(int month, int year) {
 
 	int firstDay = determineFirstDay(month, year);
 	for(int week = 0; i < 5; i++) {
+	}
+}
+
+void printYear(int year) {
+	printf("***    Calendar for %d    ***", year);
+
+	for(int i = 0; i < 12; i++) {
+		printMonth(i, year);
 	}
 }
 
