@@ -22,7 +22,7 @@
 #define FRI 5
 #define SAT 6
 
-int getDesiredYear() {
+int getDesiredYear(void) {
 	int userYear;
 
 	printf("Please enter the year for this calendar: ");
@@ -30,21 +30,57 @@ int getDesiredYear() {
 
 	if(userYear < 1583) {
 		printf("You inputted an invalid year. Please input a year >= 1583");
-		exit(1);
+		return -1;
 	}
 
 	return userYear;
 }
 
-int determineFirstDay(int year) {
+int monthKey(int month) {
+	switch(month) {
+		case JAN:
+			return 1;
+		case FEB:
+			return 4;
+		case MAR:
+			return 4;
+		case APR:
+			return 0;
+		case MAY:
+			return 2:
+		case JUN:
+			return 5;
+		case JUL:
+			return 0;
+		case AUG:
+			return 3;
+		case SEP:
+			return 6;
+		case OCT:
+			return 1;
+		case NOV:
+			return 4;
+		case DEC:
+			return 6;
+		default:
+			printf("Invalid month inputted to monthKey");
+			return -1;
+	}
+}
 
+int determineFirstDay(int month, int year) {
+	static int dayOfMonth = 1;
 
-	int decade = year % 100;	
-
-	return 0;
+	int decade = year % 100;
+	int monthAdjusted = decade / 4 + monthKey(JAN);
 }
 
 int main(void) {
 	int year = getDesiredYear();
+
+	if(year == -1) {
+		return 1;
+	}
+
 	determineFirstDay(year);
 }
