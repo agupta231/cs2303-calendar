@@ -14,13 +14,13 @@
 #define NOV 10
 #define DEC 11
 
-#define SUN 0
-#define MON 1
-#define TUE 2
-#define WED 3
-#define THU 4
-#define FRI 5
-#define SAT 6
+#define SUN 1
+#define MON 2
+#define TUE 3
+#define WED 4
+#define THU 5
+#define FRI 6
+#define SAT 0
 
 int getDesiredYear(void) {
 	int userYear;
@@ -29,7 +29,7 @@ int getDesiredYear(void) {
 	scanf("%d", &userYear);
 
 	if(userYear < 1583) {
-		printf("You inputted an invalid year. Please input a year >= 1583");
+		printf("Invalid year. Please input a year >= 1583");
 		return -1;
 	}
 
@@ -68,11 +68,37 @@ int monthKey(int month) {
 	}
 }
 
+int yearAdjustment(int year) {
+	int century = year / 100;
+	
+	while(!(century >= 17 || century <= 20)) {
+		century -= 4;
+	}
+
+	switch(century) {
+		case 17:
+			return 4;
+		case 18:
+			return 2;
+		case 19:
+			return 0;
+		case 20:
+			return 6;
+		default:
+			printf("Invalid century in yearAdjustment switch");
+			return -1;
+	}
+}
+
 int determineFirstDay(int month, int year) {
 	static int dayOfMonth = 1;
 
 	int decade = year % 100;
 	int monthAdjusted = decade / 4 + monthKey(JAN);
+	int centuryAdjusted = monthAdjusted + \
+		yearAdjustment(year) + decade;
+
+	return centuryAdjusted % 7
 }
 
 int main(void) {
@@ -82,5 +108,5 @@ int main(void) {
 		return 1;
 	}
 
-	determineFirstDay(year);
+	printf("%d", determineFirstDay(JAN, year));
 }
