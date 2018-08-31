@@ -47,7 +47,7 @@ int monthKey(int month) {
 		case APR:
 			return 0;
 		case MAY:
-			return 2:
+			return 2;
 		case JUN:
 			return 5;
 		case JUL:
@@ -71,7 +71,7 @@ int monthKey(int month) {
 int yearAdjustment(int year) {
 	int century = year / 100;
 	
-	while(!(century >= 17 || century <= 20)) {
+	while(!(century >= 17 && century <= 20)) {
 		century -= 4;
 	}
 
@@ -85,20 +85,27 @@ int yearAdjustment(int year) {
 		case 20:
 			return 6;
 		default:
-			printf("Invalid century in yearAdjustment switch");
+			printf("Invalid century %d", century);
 			return -1;
 	}
 }
 
-int determineFirstDay(int month, int year) {
-	static int dayOfMonth = 1;
+int isLeapYear(int year) {
+	return year % 400 == 0 || (year % 4 == 0 && year % 100 != 0);
+}
 
+int determineFirstDay(int month, int year) {
 	int decade = year % 100;
-	int monthAdjusted = decade / 4 + monthKey(JAN);
+	int monthAdjusted = decade / 4 + monthKey(JAN) + 1;
+
+	if((month == JAN || month == FEB) && isLeapYear(year)) {
+		monthAdjusted -= 1;
+	}
+
 	int centuryAdjusted = monthAdjusted + \
 		yearAdjustment(year) + decade;
 
-	return centuryAdjusted % 7
+	return centuryAdjusted % 7;
 }
 
 int main(void) {
@@ -108,5 +115,5 @@ int main(void) {
 		return 1;
 	}
 
-	printf("%d", determineFirstDay(JAN, year));
+	printf("%d\n", determineFirstDay(JAN, year));
 }
