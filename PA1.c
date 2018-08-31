@@ -70,10 +70,12 @@ int monthKey(int month) {
 
 int yearAdjustment(int year) {
 	int century = year / 100;
-	int sign = year < 1700 ? -1 : 1;
 
-	while(!(century >= 17 && century <= 20)) {
-		century += sign * 4;
+	if(century < 17) {
+		century += ((20 - century) / 4) * 4;
+	}
+	else if(century > 20) {
+		century -= ((century - 17) / 4) * 4;
 	}
 
 	switch(century) {
