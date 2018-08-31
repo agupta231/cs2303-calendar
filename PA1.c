@@ -111,12 +111,70 @@ int determineFirstDay(int month, int year) {
 	return centuryAdjusted % 7;
 }
 
+void printYear(int year) {
+	printf("***    Calendar for %d    ***", year);
+
+	for(int i = 0; i < 12; i++) {
+		printMonth(i, year);
+	}
+}
+
+void printMonth(int month, int year) {
+	switch(month) {
+		case JAN:
+			printf("January %d", year);
+			break;
+		case FEB:
+			printf("Feburary %d", year);
+			break;
+		case MAR:
+			printf("March %d", year);
+			break;
+		case APR:
+			printf("April %d", year);
+			break;
+		case MAY:
+			printf("May %d", year);
+			break;
+		case JUN:
+			printf("June %d", year);
+			break;
+		case JUL:
+			printf("July %d", year);
+			break;
+		case AUG:
+			printf("August %d", year);
+			break;
+		case SEP:
+			printf("September %d", year);
+			break;
+		case OCT:
+			printf("October %d", year);
+			break;
+		case NOV:
+			printf("November %d", year);
+			break;
+		case DEC:
+			printf("December %d", year);
+			break;
+	}
+ 
+	printWeekHeader();
+
+	int firstDay = determineFirstDay(month, year);
+	for(int week = 0; i < 5; i++) {
+	}
+}
+
 int main(void) {
+	printf("***    Monthly Calendar    ***")
+
 	int year = getDesiredYear();
 
 	if(year == -1) {
 		return 1;
 	}
 
+	printCalendar(year)
 	printf("%d\n", determineFirstDay(JAN, year));
 }
