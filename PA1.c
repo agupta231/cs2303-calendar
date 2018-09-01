@@ -111,7 +111,38 @@ int determineFirstDay(int month, int year) {
 	return centuryAdjusted % 7;
 }
 
+void printWeekHeader(void) {
+	printf("\nSun  Mon  Tue  Wed  Thu  Fri  Sat\n");
+}
+
+void printWeek(int startPos, 
+							 int startNumber,
+							 int month,
+							 int isLeapYear) {
+
+	for(int i = 0; i < 5 * startPos; i++) {
+		printf(" ");
+	}
+
+	int currentDay = startNumber;
+	for(int i = startPos; i < 7; i++) {
+		if(currentDay < 10) {
+			printf("  ");
+		} else {
+			printf(" ");
+		}
+
+		printf("%d", currentDay);
+
+		if(currentDay == 31) {
+
+		}
+	}
+}
+
 void printMonth(int month, int year) {
+	printf("\n\n");
+
 	switch(month) {
 		case JAN:
 			printf("January %d", year);
@@ -153,12 +184,57 @@ void printMonth(int month, int year) {
  
 	printWeekHeader();
 
-	int firstDay = determineFirstDay(month, year);
-	for(int week = 0; i < 5; i++) {
+	int startPos = determineFirstDay(month, year);
+	int currentDay = 1;
+
+	for(int i = 0; i < 5 * startPos; i++) {
+		printf(" ");
+	}
+
+	for(int week = 0; week < 5; week++) {
+		for(int day = startPos; day < 7; day++) {
+			if(currentDay < 10) {
+				printf("  ");
+			} else {
+				printf(" ");
+			}
+
+			printf("%d", currentDay);
+
+			if((month == JAN ||
+						month == MAR ||
+						month == MAY ||
+						month == JUL ||
+						month == AUG ||
+						month == OCT ||
+						month == DEC) && 
+					currentDay >= 30) {
+
+				if(currentDay == 30) {
+					currentDay++;
+					continue;
+				} else if (currentDay == 31) {
+					return;
+				}
+			} else if (currentDay == 30) {
+				return;
+			} else if (month == FEB && currentDay >= 28) {
+				if(!isLeapYear(year) && currentDay == 28) {
+					return;
+				} else if(isLeapYear(year) && currentDay == 29) {
+					return;
+				}
+			}
+
+			currentDay++;
+		}
+
+		printf("\n");
+		startPos = 0;
 	}
 }
 
-void printYear(int year) {
+void printCalendar(int year) {
 	printf("***    Calendar for %d    ***", year);
 
 	for(int i = 0; i < 12; i++) {
@@ -167,7 +243,7 @@ void printYear(int year) {
 }
 
 int main(void) {
-	printf("***    Monthly Calendar    ***")
+	printf("***    Monthly Calendar    ***\n");
 
 	int year = getDesiredYear();
 
@@ -175,6 +251,6 @@ int main(void) {
 		return 1;
 	}
 
-	printCalendar(year)
+	printCalendar(year);
 	printf("%d\n", determineFirstDay(JAN, year));
 }
