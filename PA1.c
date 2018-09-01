@@ -157,6 +157,20 @@ int isLeapYear(int year) {
 	return year % 400 == 0 || (year % 4 == 0 && year % 100 != 0);
 }
 
+/**
+ * @brief Determine the first weekday of the month.
+ *
+ * A function that will determine which day of the week the first day of a given
+ * month of a given year will fall on. It should be noted that this function
+ * works based off the weekdays constants defined above, which may not
+ * correlate to how they are printed out on the screen.
+ *
+ * @param month (int) month to get the first weekday of 
+ * @param year (int) user inputted year
+ *
+ * @return (int) a day, as defined by the constants above, which represents that
+ *							 the first day of the month lands on that day.
+ */
 int determineFirstDay(int month, int year) {
 	int decade = year % 100;
 	int monthAdjusted = decade / 4 + monthKey(month) + 1;
@@ -171,6 +185,18 @@ int determineFirstDay(int month, int year) {
 	return centuryAdjusted % 7;
 }
 
+/**
+ * @brief Convert the weekday to a 0-indexed array position.
+ *
+ * As the weekday constants may or may not correleate to the order in which they
+ * may be printed out, this function maps those constants to a 0-indexed
+ * position, which is a lot easier to deal with when printing out the calendar.
+ *
+ * @param day (int) constant that represents the day of the week
+ *
+ * @return (int) a 0-indexed position that correlates to the printed position of
+ *				 the day
+ */
 int firstDayToCalendarPosition(int day) {
 	switch(day) {
 		case SUN:
@@ -195,10 +221,14 @@ int firstDayToCalendarPosition(int day) {
 	return -1;
 }
 
-void printWeekHeader(void) {
-	printf("\nSun  Mon  Tue  Wed  Thu  Fri  Sat\n");
-}
-
+/**
+ * @brief Formats and prints out a week.
+ *
+ * @param startPos (int) the position of the first significant date in the week.
+ * @param startNumber (int) the date of the first day of the week.
+ * @param month (int) what month the week is int (as per the constants)
+ * @param isLeapYear (boolean) if the current year is a leap year;
+ */
 void printWeek(int startPos, 
 							 int startNumber,
 							 int month,
@@ -224,6 +254,12 @@ void printWeek(int startPos,
 	}
 }
 
+/**
+ * @brief Formats and prints out the calendar for a month;
+ *
+ * @param month (int) month as an int (as per the consants)
+ * @param year (int) the year the month is in.
+ */
 void printMonth(int month, int year) {
 	printf("\n\n");
 
@@ -266,7 +302,7 @@ void printMonth(int month, int year) {
 			break;
 	}
  
-	printWeekHeader();
+	printf("\nSun  Mon  Tue  Wed  Thu  Fri  Sat\n");
 
 	int startPos = firstDayToCalendarPosition(determineFirstDay(month, year));
 	int currentDay = 1;
@@ -318,6 +354,11 @@ void printMonth(int month, int year) {
 	}
 }
 
+/**
+ * @brief Format and print out the calendar for a year
+ *
+ * @param year (int) year to print out the calendar for
+ */
 void printCalendar(int year) {
 	printf("***    Calendar for %d    ***", year);
 
@@ -336,6 +377,5 @@ int main(void) {
 		return 1;
 	}
 
-	printf("%d\n", determineFirstDay(8, year));
 	printCalendar(year);
 }
