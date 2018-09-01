@@ -1,6 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
 
+/*
+ * Global constants for enumerating the months of the year. A better solution
+ * would have been to use an enum or struct, but we are not supposed to use
+ * those for this project.
+ */
 #define JAN 0
 #define FEB 1
 #define MAR 2
@@ -14,6 +18,11 @@
 #define NOV 10
 #define DEC 11
 
+/*
+ * Global constants for enumerating the days of the week. Again a better
+ * solution would have been to use an enum or struct, but oh well. These numbers
+ * are funky becuase they are designed to work with the math in this proejct.
+ */
 #define SUN 1
 #define MON 2
 #define TUE 3
@@ -22,6 +31,13 @@
 #define FRI 6
 #define SAT 0
 
+
+/**
+ * User input function. Data cleanses the input and prevents the human from...
+ * ... well, being a human.
+ *
+ * @return (int) valid year that the human inputted. -1 otherwise.
+ */
 int getDesiredYear(void) {
 	int userYear;
 
@@ -215,7 +231,7 @@ void printMonth(int month, int year) {
 		printf(" ");
 	}
 
-	for(int week = 0; week <= 5; week++) {
+	for(int week = 0; week <= 6; week++) {
 		for(int day = startPos; day < 7; day++) {
 			if(currentDay < 10) {
 				printf("  ");
@@ -263,6 +279,7 @@ void printCalendar(int year) {
 
 	for(int i = 0; i < 12; i++) {
 		printMonth(i, year);
+		printf("\n");
 	}
 }
 
