@@ -1,3 +1,10 @@
+/* 
+ * Program to print out the calendar for any year.
+ *
+ * Author: Ankur Gupta
+ * Email: agupta4@wpi.edu
+ * 
+ */
 #include <stdio.h>
 
 /*
@@ -33,8 +40,11 @@
 
 
 /**
- * User input function. Data cleanses the input and prevents the human from...
- * ... well, being a human.
+ * @brief User input function. 
+ *
+ * Data cleanses the input and prevents the human from... well, being a human.
+ * Because this program is based around the Gregorian calendar, dates only after
+ * 1583 work.
  *
  * @return (int) valid year that the human inputted. -1 otherwise.
  */
@@ -52,6 +62,18 @@ int getDesiredYear(void) {
 	return userYear;
 }
 
+/**
+ * @brief Function to return a month's key value.
+ * 
+ * This function goes hand-with-hand with the math required for this project.
+ * The function is basically an array/struct in its functionality, but was
+ * implemented this way as per requriements of the project.
+ *
+ * @param month (int) representation of the desired month, as per the constants
+ *							defined before
+ *
+ * @return (int) the month's key value, to be used in calculations.
+ */
 int monthKey(int month) {
 	switch(month) {
 		case JAN:
@@ -84,6 +106,17 @@ int monthKey(int month) {
 	}
 }
 
+/**
+ * @brief A function that maps a year to its century code.
+ *
+ * A simple mapping function that maps a year to its century code. Because
+ * century codes are only defined for 1700 - 2000, a little bit of math is
+ * required to translate any year the be in that range.
+ *
+ * @param year (int) desired year to get the century code for.
+ *
+ * @return (int) the century code for the inputted year.
+ */
 int yearAdjustment(int year) {
 	int century = year / 100;
 
@@ -109,6 +142,17 @@ int yearAdjustment(int year) {
 	}
 }
 
+
+/**
+ * @brief Determine if a given year is a leap year.
+ *
+ * A helper function that determines if the inputted year is a leap year or not.
+ * Accounts for all of the cases, and is mostly used so that the code stays DRY.
+ *
+ * @param year (int) year that needs to check if it is a leap year or not
+ *
+ * @return (boolean) 1 if it is a leap year, 0 otherwise.
+ */
 int isLeapYear(int year) {
 	return year % 400 == 0 || (year % 4 == 0 && year % 100 != 0);
 }
