@@ -99,7 +99,7 @@ int isLeapYear(int year) {
 
 int determineFirstDay(int month, int year) {
 	int decade = year % 100;
-	int monthAdjusted = decade / 4 + monthKey(JAN) + 1;
+	int monthAdjusted = decade / 4 + monthKey(month) + 1;
 
 	if((month == JAN || month == FEB) && isLeapYear(year)) {
 		monthAdjusted -= 1;
@@ -109,6 +109,30 @@ int determineFirstDay(int month, int year) {
 		yearAdjustment(year) + decade;
 
 	return centuryAdjusted % 7;
+}
+
+int firstDayToCalendarPosition(int day) {
+	switch(day) {
+		case SUN:
+			return 0;
+		case MON:
+			return 1;
+		case TUE:
+			return 2;
+		case WED:
+			return 3;
+		case THU:
+			return 4;
+		case FRI:
+			return 5;
+		case SAT:
+			return 6;
+		default:
+			printf("Invalid day given %d", day);
+			break;
+	}
+
+	return -1;
 }
 
 void printWeekHeader(void) {
@@ -184,14 +208,14 @@ void printMonth(int month, int year) {
  
 	printWeekHeader();
 
-	int startPos = determineFirstDay(month, year);
+	int startPos = firstDayToCalendarPosition(determineFirstDay(month, year));
 	int currentDay = 1;
 
 	for(int i = 0; i < 5 * startPos; i++) {
 		printf(" ");
 	}
 
-	for(int week = 0; week < 5; week++) {
+	for(int week = 0; week <= 5; week++) {
 		for(int day = startPos; day < 7; day++) {
 			if(currentDay < 10) {
 				printf("  ");
@@ -251,6 +275,6 @@ int main(void) {
 		return 1;
 	}
 
+	printf("%d\n", determineFirstDay(8, year));
 	printCalendar(year);
-	printf("%d\n", determineFirstDay(JAN, year));
 }
