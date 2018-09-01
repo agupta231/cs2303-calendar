@@ -199,7 +199,7 @@ void printMonth(int month, int year) {
 				printf(" ");
 			}
 
-			printf("%d", currentDay);
+			printf("%d  ", currentDay);
 
 			if((month == JAN ||
 						month == MAR ||
