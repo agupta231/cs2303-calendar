@@ -4,6 +4,14 @@
  * Author: Ankur Gupta
  * Email: agupta4@wpi.edu
  * 
+ * A good chunk of this code is translated math from 
+ * http://mathforum.org/dr.math/faq/faq.calendar.html, which states a formula to
+ * get the day of week for any date in time. This formula is used to determine
+ * the first day of week in a month, and then the calendar is generated from
+ * there. 
+ *
+ * More details about this and why I implemented the things the way I did can be
+ * found in the readme.
  */
 #include <stdio.h>
 
@@ -51,9 +59,13 @@
 int getDesiredYear(void) {
 	int userYear;
 
+	// Prompt the user for the desired year for the calendar
 	printf("Please enter the year for this calendar: ");
 	scanf("%d", &userYear);
 
+	// 1583 was the first year of the Gregorian calendar, thus all dates before
+	// that are invalid. If the date is invalid, send back a -1 as a flag
+	// indicating the main program to exit.
 	if(userYear < 1583) {
 		printf("Invalid year. Please input a year >= 1583");
 		return -1;
@@ -75,6 +87,9 @@ int getDesiredYear(void) {
  * @return (int) the month's key value, to be used in calculations.
  */
 int monthKey(int month) {
+	// Return the corresponding month key for a given month. These keys correlate
+	// to the math requried to find out the day of week for any date in any year.
+	// These values can be found online.
 	switch(month) {
 		case JAN:
 			return 1;
@@ -101,6 +116,8 @@ int monthKey(int month) {
 		case DEC:
 			return 6;
 		default:
+			// Somehow a non-month integer gets passed through, output an error
+			// message
 			printf("Invalid month inputted to monthKey");
 			return -1;
 	}
@@ -118,15 +135,41 @@ int monthKey(int month) {
  * @return (int) the century code for the inputted year.
  */
 int yearAdjustment(int year) {
+	// Get the first two digits of the year. Because of how integer division works
+	// in C, dividing by 100 will truncate the number at the decimal point,
+	// essentially flooring the number.
 	int century = year / 100;
-
+	
+	// The math only works if the first two digits in the year are in the range 
+	// [17, 20], and if not, then you have to +/- 4 until you are in the range (as
+	// the calendar repeats itself every 400 years)
+	
+	// If the first two digits are less than 17, then add the respective number of
+	// 4's
 	if(century < 17) {
+		// Do the math to determine how many 4's need to be added, and then multiply
+		// by 4 to get the the first two digits of the year into the range. While
+		// this expression may look like it can be simplifed to 20 - century, there
+		// is actually an implict mathematical flooring going on because these are
+		// integer operations.
 		century += ((20 - century) / 4) * 4;
 	}
 	else if(century > 20) {
+		// Do the math to determine how many 4's need to be substracted.
+		// 
+		// The math is the same as the previous conditional block, it's just 
+		// subtraction other than multiplication. 
+		//
+		// One thing to note is that this can also be naively using a loop to 
+		// subtract the fours. However, by creating a mathetmatical expression, the
+		// runtime of this code block goes from O(n), where n is (year - 17) / 4, to
+		// O(1). This makes it so that the time to calculate the calendar for 1600
+		// is the same as the time to calculate the calendar for 71823947.
 		century -= ((century - 17) / 4) * 4;
 	}
 
+	// Return the value for the century. These numbers correlate to the math
+	// for the day of week calculation, and can be found on the website.
 	switch(century) {
 		case 17:
 			return 4;
@@ -137,6 +180,8 @@ int yearAdjustment(int year) {
 		case 20:
 			return 6;
 		default:
+			// Incase there is something funky with the previous calcuations, this 
+			// line will spit out an error message.
 			printf("Invalid century %d", century);
 			return -1;
 	}
@@ -154,6 +199,16 @@ int yearAdjustment(int year) {
  * @return (boolean) 1 if it is a leap year, 0 otherwise.
  */
 int isLeapYear(int year) {
+	// Boolean logic to determine if the given year is a leap year or not
+	// If the year is divisible by 400, then return true
+	// If the year is divislbe by 4 but NOT 100, then return true,
+	// else return false
+	//
+	// Yes, yes, I know that there would be less function calls if I statically
+	// stored the year and set a flag just once... but I tried to design it
+	// dynamically (be able to print out the calendar for multiple years) and/or
+	// was too lazy to make it perfectly optimal because the performace gain is
+	// pretty minimal.
 	return year % 400 == 0 || (year % 4 == 0 && year % 100 != 0);
 }
 
@@ -172,16 +227,28 @@ int isLeapYear(int year) {
  *							 the first day of the month lands on that day.
  */
 int determineFirstDay(int month, int year) {
+	// Get the last two digits of the year, as required per the formula
 	int decade = year % 100;
+
+	// Apply the month adjustment, as required per the formula. On the website,
+	// this line correlates to steps 2 - 4
 	int monthAdjusted = decade / 4 + monthKey(month) + 1;
 
+	// If the month is Janurary or Feburary of a leap year, then the formula
+	// requires that 1 be subtracted from sum. 
+	// This correlates to step 5 on the website.
 	if((month == JAN || month == FEB) && isLeapYear(year)) {
 		monthAdjusted -= 1;
 	}
 
-	int centuryAdjusted = monthAdjusted + \
-		yearAdjustment(year) + decade;
+	// Apply the century adjustment, as required per the formula. This correlates
+	// to steps 6 - 7 from the website
+	int centuryAdjusted = monthAdjusted + yearAdjustment(year) + decade;
 
+	// As per the formula, take the mod 7 and that will be the day of week, which
+
+	// As per the formula, take the mod 7 and that will be the day of week, which
+	// are defined as constants above// are defined as constants above
 	return centuryAdjusted % 7;
 }
 
@@ -198,6 +265,9 @@ int determineFirstDay(int month, int year) {
  *				 the day
  */
 int firstDayToCalendarPosition(int day) {
+	// Map the weekday constants to a 0-indexed value to make printing easier.
+	// In fact, to completely change the look of the calendar, you will just have
+	// to modify this function and how the header looks..
 	switch(day) {
 		case SUN:
 			return 0;
@@ -214,10 +284,12 @@ int firstDayToCalendarPosition(int day) {
 		case SAT:
 			return 6;
 		default:
+			// Incase there is some weird case where the day isn't a weekday
 			printf("Invalid day given %d", day);
 			break;
 	}
 
+	// Return a flag indicating that there was an issue with the function.
 	return -1;
 }
 
@@ -234,9 +306,19 @@ void printWeek(int startPos,
 							 int month,
 							 int isLeapYear) {
 
+	// The space taken up by a single date + spacing is 5 spaces. In order to
+	// fill in the whitespace for empty dates, the loop needs to insert (i * 5)
+	// spaces, as the printing standard is 0-indexed.
+	//
+	// Loop invariant:
+	// The left side on the line is either spaces or nothing
+	// The cursor is between 0 and 5 * startpos (Which is the number of required
+	// whitespace.
+	// The right side of the line doesn't have anything.
 	for(int i = 0; i < 5 * startPos; i++) {
 		printf(" ");
 	}
+
 
 	int currentDay = startNumber;
 	for(int i = startPos; i < 7; i++) {
