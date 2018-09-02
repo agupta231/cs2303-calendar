@@ -294,57 +294,16 @@ int firstDayToCalendarPosition(int day) {
 }
 
 /**
- * @brief Formats and prints out a week.
- *
- * @param startPos (int) the position of the first significant date in the week.
- * @param startNumber (int) the date of the first day of the week.
- * @param month (int) what month the week is int (as per the constants)
- * @param isLeapYear (boolean) if the current year is a leap year;
- */
-void printWeek(int startPos, 
-							 int startNumber,
-							 int month,
-							 int isLeapYear) {
-
-	// The space taken up by a single date + spacing is 5 spaces. In order to
-	// fill in the whitespace for empty dates, the loop needs to insert (i * 5)
-	// spaces, as the printing standard is 0-indexed.
-	//
-	// Loop invariant:
-	// The left side on the line is either spaces or nothing
-	// The cursor is between 0 and 5 * startpos (Which is the number of required
-	// whitespace.
-	// The right side of the line doesn't have anything.
-	for(int i = 0; i < 5 * startPos; i++) {
-		printf(" ");
-	}
-
-
-	int currentDay = startNumber;
-	for(int i = startPos; i < 7; i++) {
-		if(currentDay < 10) {
-			printf("  ");
-		} else {
-			printf(" ");
-		}
-
-		printf("%d", currentDay);
-
-		if(currentDay == 31) {
-
-		}
-	}
-}
-
-/**
  * @brief Formats and prints out the calendar for a month;
  *
  * @param month (int) month as an int (as per the consants)
  * @param year (int) the year the month is in.
  */
 void printMonth(int month, int year) {
+	// Print out whitespace to make the calendar more aestethically pleasing.
 	printf("\n\n");
 
+	// Baseed on month int, print out the correct month name
 	switch(month) {
 		case JAN:
 			printf("January %d", year);
@@ -383,55 +342,120 @@ void printMonth(int month, int year) {
 			printf("December %d", year);
 			break;
 	}
- 
+
+	// Print out the header for month. This could be better implemented by making
+	// the number of whitespaces between days a variable and adding a loop to
+	// dynamically create the table. However, for this projects, the gains seem to
+	// be trival.
 	printf("\nSun  Mon  Tue  Wed  Thu  Fri  Sat\n");
 
+	// Find out which day the first day of the month is.
 	int startPos = firstDayToCalendarPosition(determineFirstDay(month, year));
+
+	// Keep track of which day of the month it is
 	int currentDay = 1;
 
+	// The number of spaces for each date + spacing between dates is 5. That means
+	// that the whitespace  requried for n days is 5 * n.
+	//
+	// Loop Invariant:
+	// Left side of line: Either nothing or whitespace
+	// i: Always in the range [0:5 * startPos) and is current position of the
+	//    cursor on the line
+	// Right side of line: No text
 	for(int i = 0; i < 5 * startPos; i++) {
 		printf(" ");
 	}
 
+	// Iterate through the different weeks of the month. 6 weeks are chosen
+	// because there is a maximum of 5 weeks in a month (if the first is on
+	// Saturday, and it is a 31 day month). 6 is chosen just in case of a safety,
+	// just incase there is some formatting changes in the future. In any case,
+	// this function breaks out when the month is finished, so this loop would
+	// work even if there weren't any stopping criteria.
+	//
+	// Loop invariant:
+	// Before: Either the headers for the weeks, or previous weeks have been
+	//         printed out
+	// Current: The current week that is being printed out
+	// After: Nothing has been printed out.
 	for(int week = 0; week <= 6; week++) {
+		// Iterate through the different days in the week.
+		//
+		// Loop Invariant:
+		// Before: Either whitespace (if the first day of the week doens't start on
+		//         Sunday) or the previous days have been printed out.
+		// Current: The current day of the week. If this is the first week, startPos
+		//          might not be 0, indicating that the first day of the week 
+		//          doesn't start on Sunday. On all other weeks of that month,
+		//          startPos should be equal to 0.
+		//  After: Nothing has been printed yet.
 		for(int day = startPos; day < 7; day++) {
+			// If the current day is less than 10, that means it is 1 char wide, and
+			// needs 2 spaces to format it correctly
 			if(currentDay < 10) {
 				printf("  ");
-			} else {
+			} 
+			// If the current day is >= 10, that means that it is 2 chars wide, and
+			// needs 1 space to format it correctly.
+			else {
 				printf(" ");
 			}
 
+			// Print the current day and the spacing for between days
 			printf("%d  ", currentDay);
 
+			// If the month has 31 days and the current day is greater than or equal
+			// to 30
 			if((month == JAN ||
-						month == MAR ||
-						month == MAY ||
-						month == JUL ||
-						month == AUG ||
-						month == OCT ||
-						month == DEC) && 
+					month == MAR ||
+					month == MAY ||
+					month == JUL ||
+					month == AUG ||
+					month == OCT ||
+					month == DEC) && 
 					currentDay >= 30) {
 
+				// If the current day is the 30th, then increment the counter, and
+				// continue
 				if(currentDay == 30) {
 					currentDay++;
 					continue;
-				} else if (currentDay == 31) {
+				} 
+				// If the current day is the 31st, then exit out of the function as the
+				// month is done.
+				else if (currentDay == 31) {
 					return;
 				}
-			} else if (currentDay == 30) {
+			} 
+			// If the month has <31 days in it, and the current day is the 30th, then
+			// exit out of the function as the month is done.
+			else if (currentDay == 30) {
 				return;
-			} else if (month == FEB && currentDay >= 28) {
+			} 
+			// If the month is Feburary and the current day is >= 28
+			else if (month == FEB && currentDay >= 28) {
+				// If it isn't a leap year and the current day is 28, then exit out of
+				// the function, as the month is done
 				if(!isLeapYear(year) && currentDay == 28) {
 					return;
-				} else if(isLeapYear(year) && currentDay == 29) {
+				} 
+				// If it is a leap year and the curetn day is 29, then exit out of the
+				// function, as the month is done.
+				else if(isLeapYear(year) && currentDay == 29) {
 					return;
 				}
 			}
 
+			// Increment the current day counter
 			currentDay++;
 		}
 
+		// Print out a newline so that the next week starts on a new line.
 		printf("\n");
+
+		// Reset the startPos pointer so that the next iteration will start in the
+		// 0th position.
 		startPos = 0;
 	}
 }
@@ -442,22 +466,38 @@ void printMonth(int month, int year) {
  * @param year (int) year to print out the calendar for
  */
 void printCalendar(int year) {
+	// Print out header for the yearly calendar
 	printf("***    Calendar for %d    ***", year);
 
+	// Iterate through the differnet months in the year
+	//
+	// Loop Invariant
+	// Before: All of the previous months, printed
+	// Current: The current month in teh ear that is to be printed
+	// After: Nothing
 	for(int i = 0; i < 12; i++) {
+		// Print out the current month
 		printMonth(i, year);
+
+		// Print out a new line so that the next month looks more aesthetically
+		// pleasing
 		printf("\n");
 	}
 }
 
 int main(void) {
+	// Print out the ehader for the whole program
 	printf("***    Monthly Calendar    ***\n");
 
+	// Get the desired year from the user
 	int year = getDesiredYear();
 
+	// If the function returned -1, that means that the user inputted an invalid
+	// year, and the program should exit.
 	if(year == -1) {
 		return 1;
 	}
 
+	// Print the calendar for the desired year.
 	printCalendar(year);
 }
