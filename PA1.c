@@ -187,7 +187,6 @@ int yearAdjustment(int year) {
 	}
 }
 
-
 /**
  * @brief Determine if a given year is a leap year.
  *
@@ -377,7 +376,7 @@ void printMonth(int month, int year) {
 	// Loop invariant:
 	// Before: Either the headers for the weeks, or previous weeks have been
 	//         printed out
-	// Current: The current week that is being printed out
+	// week:  The current week that is being printed out
 	// After: Nothing has been printed out.
 	for(int week = 0; week <= 6; week++) {
 		// Iterate through the different days in the week.
@@ -385,7 +384,7 @@ void printMonth(int month, int year) {
 		// Loop Invariant:
 		// Before: Either whitespace (if the first day of the week doens't start on
 		//         Sunday) or the previous days have been printed out.
-		// Current: The current day of the week. If this is the first week, startPos
+		// day:     The current day of the week. If this is the first week, startPos
 		//          might not be 0, indicating that the first day of the week 
 		//          doesn't start on Sunday. On all other weeks of that month,
 		//          startPos should be equal to 0.
@@ -473,7 +472,7 @@ void printCalendar(int year) {
 	//
 	// Loop Invariant
 	// Before: All of the previous months, printed
-	// Current: The current month in teh ear that is to be printed
+	// i:      The current month in teh ear that is to be printed
 	// After: Nothing
 	for(int i = 0; i < 12; i++) {
 		// Print out the current month
