@@ -3,6 +3,7 @@
 This is the code base for my first project for CS2303. 
 
 Author: Ankur Gupta
+
 Email: agupta4@wpi.edu
 
 ## Summary
