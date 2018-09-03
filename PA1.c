@@ -67,7 +67,7 @@ int getDesiredYear(void) {
   // that are invalid. If the date is invalid, send back a -1 as a flag
   // indicating the main program to exit.
   if(userYear < 1583) {
-    printf("Invalid year. Please input a year >= 1583");
+    printf("Invalid year. Please input a year >= 1583\n");
     return -1;
   }
 
