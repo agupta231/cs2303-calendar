@@ -88,5 +88,46 @@ global, even though it would have been perfectly acceptable in this case. While
 the time complexity is trivial, the storage complexity would have been optimized
 by keeping the values global.
 
-## Loop Invariants and Pre/Post Conditions
-// A sub section for each function and loop
+## Loop Invariants 
+
+### First for loop in printMonth()
+
+This loop is in charge of filling up a month with blank to correctly align the
+first day of week. My program was formatted to have 3 chars per date, and 2
+chars per space between date. Thus, if the month started on the `n`th day, then
+there would need to be `5 * n` spaces.
+
+Thus the loop invariant is that the current value (`i`) represents every char
+that is blank because there is no day on that month. The left side of the line
+is always supposed to be nothing or just white space, and the right side of the
+cursor should always have no text.
+
+### Second for loop in printMonth()
+
+This loop is responsible for printing each week in the month. The cursor goes on
+for only 6 weeks as there are a max of 5 week in a month + 1 for safety (and
+future-proofing against future formatting changes).
+
+The loop invariant is that the current value represents the current week in the
+month that is being printed out. Before the cursor, all of the previous
+weeks/day headers should be printed out. After the cursor should be nothing.
+
+### Third for loop in printMonth()
+
+This loop prints out each day in a week. The loop variable is initialized to be
+equal to `startPos` which is a variable storing the position of the first day of
+week. Therefore, a pre-condition is that `startPos` is in the discrete range of
+[0, 6]. Additionally, a post condition of the parent loop is that `startPos`
+gets reset every iteration.
+
+The loop invariant is that on the left side of the cursor is always either
+white space, nothing, or the previous days of the week that have been already
+printed out. The right side of the cursor should be nothing.
+
+### First loop in printCalendar()
+
+This loop prints out every month in the year.
+
+The loop invariant is that the loop variable represents every month in the year.
+Before the cursor should be previously printed out months, headings, or white
+space, and after the cursor should be nothing.
