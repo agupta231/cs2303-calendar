@@ -24,8 +24,69 @@ you input a year. Simply type in a year, and you should be greeted with a
 calendar for that year!
 
 ## Algorithm
+
+In these sections, I will describe why I chose the implementation I did, how the
+algorithm works, and a time complexity analysis.
+
 ### Reasoning
+
+I had two main ideas when it came to designing this program. I could either:
+
+1. Start off from a known year (1583) and iterate up to the inputted year
+2. Mathematically calculate the first day of the month for the given year
+
+I went with #2 in my implementation of the program, mostly for efficiency
+reasons, which I will describe more in the Time Complexity Analysis section of
+this document.
+
+### How the algorithm works
+
+For this program, I used the Key Value method to determine the day of week for
+any date. The link to the math can be found 
+![here](http://mathforum.org/dr.math/faq/faq.calendar.html). I chose this
+algorithm over Zeller's method because I had trouble getting Zeller's rule to
+actually work.
+
+The math is based around the fact that the Gregorian Calendar repeats every 400
+years. The exact details can be found on the website, but the basic gist of the
+math is as follows:
+
+1. Get the suffix of the year (ie, 2008 would be 08).
+2. Divide by 4, as leap years occur roughly every 4 years
+3. Add the date of the month
+4. Apply a precalculated month modifier value
+5. Add a leap year adjustment
+6. Add a precalculated year modifier value
+7. The modulo of 7 and get the day of week as a result
+
+*Note*: When the modulo is taken, the days of the week are arranged in kind of a
+weird way: Saturday is technically the start of the week. Not a big deal, but
+just needs to be accounted for.
+
 ### Time Complexity Analysis
+
+A naive solution to this problem would have been to start off with a known year,
+and then work your way up/down to the desired year. While that works, that means
+that you will have a loop that runs `O(n)` times, where `n` is the delta between
+the desired year and the known year.
+
+To alleviate this, I opted to calculate the first day of the week for every
+month, and then to just generate the month from there. As all of the math is
+formula based and has no loops, the whole program runs in `O(1)` time.
+
+*Remarks:*
+My code is sub-optimal because it calculates the first day of the week for every
+month, instead of just calculating it once and generating the whole year from
+there. My justification for this design is that the whole printMonth function is
+a lot cleaner and easier to call. Additionally, because the cost to calculate
+the first day of week of a month is `O(1)`, the performance loss is trivial.
+
+Another place that my code could be optimized is to make the user inputted year
+and other context associated flags global. I didn't implement my code this way,
+as it's generally a **very** bad practice to make anything other than constants
+global, even though it would have been perfectly acceptable in this case. While
+the time complexity is trivial, the storage complexity would have been optimized
+by keeping the values global.
 
 ## Loop Invariants and Pre/Post Conditions
 // A sub section for each function and loop
